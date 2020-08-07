@@ -1,0 +1,15 @@
+labrador
+bulldog
+beagle
+poodle
+dog
+pet
+puppy
+yorkshire
+rottweiler
+boxer
+dachshund
+husky
+chihuahua
+dobermann
+pug

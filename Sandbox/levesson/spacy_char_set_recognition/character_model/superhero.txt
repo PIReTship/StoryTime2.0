@@ -1,0 +1,16 @@
+superhero
+aquaman
+asterix
+avengers
+batgirl
+batman
+spiderman
+batwoman
+marvel
+catwoman
+hawkeye
+hulk
+supergirl
+superman
+thor
+wolverine

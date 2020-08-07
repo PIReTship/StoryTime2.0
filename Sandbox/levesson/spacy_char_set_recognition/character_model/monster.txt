@@ -1,0 +1,16 @@
+frankenstein
+ghost
+mummy
+scarecrow
+skeleton
+vampire
+witch
+zombie
+monster
+dragon
+grendell
+chupacabra
+werewolf
+hodag
+dybbuk
+cerberus
