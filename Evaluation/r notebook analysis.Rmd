@@ -1,0 +1,94 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+data <- read.csv("../Sandbox/levesson/emotion_description/ratings_teen_processed composite.csv")
+  
+twelve = subset(data, age >= 12 & age < 14 & avg_rating >= 4)["synset"]
+fourteen = subset(data, age>=14 & age < 16 & avg_rating >= 4)["synset"]
+sixteen = subset(data, age>=16 & age < 18 & avg_rating >= 4)["synset"]
+eighteen = subset(data, age>=18 & avg_rating >= 4)["synset"]
+```
+
+
+
+```{r}
+library(stringr)
+
+
+getEmotions = function(emotion, list){
+  header_regex = paste("'" , emotion , "': \\d*\\.?\\d*", sep="")
+  trim_regex = paste("'" , emotion , "': ", sep="")
+
+  ems <- str_extract(list[,1], regex(header_regex))
+  ems <- str_replace(ems, trim_regex, "")
+  em1 <- as.numeric(ems)
+  return(em1)
+}
+
+emotion_test = function(emotion, list1, list2){
+ # print(emotion)
+  em1 <- getEmotions(emotion, list1)
+  em2 <- getEmotions(emotion, list2)
+  
+  cat(t.test(em1, em2)$p.value)
+  cat('\n')
+}
+
+test_all = function(list1, list2){
+  emotion_test("Anger", list1, list2)
+  emotion_test("Anticipation", list1, list2)
+  emotion_test("Disgust", list1, list2)
+  emotion_test("Fear", list1, list2)
+  emotion_test("Joy", list1, list2)
+  emotion_test("Sadness", list1, list2)
+  emotion_test("Surprise", list1, list2)
+  emotion_test("Trust", list1, list2)
+  emotion_test("Objective", list1, list2)
+}
+
+test_rating = function(minage){
+  maxage <- minage + 2
+test_all(subset(data, age >= minage & age < maxage & avg_rating >= 4 )["synset"], subset(data, age >= minage & age < maxage & avg_rating <= 2.5 )["synset"])
+}
+
+test_age = function(age1, age2){
+  test_all(subset(data, age >= age1 & age < age1+2 & avg_rating >= 4 )["synset"], subset(data, age >= age2 & age < age2+2 & avg_rating >= 4 )["synset"])
+}
+
+test_all(data["synset"], data["no_synset"])
+
+test_age(16,18)
+test_rating(18)
+```
+```{r}
+emotions <- c("Anger", "Anticipation", "Disgust", "Fear", "Joy", "Sadness", "Surprise", "Trust")
+used_colors <- c("brown1", "chocolate1", "forestgreen", "Blue", "Purple", "Black", "deeppink4", "cyan4")
+index <- 1
+par(mar = c(5,5,2,12))
+for (i in emotions){
+  
+  me_color <- used_colors[index]
+  index <- index +1
+  #used_colors <- append(used_colors, me_color)
+  emotion_lines <- c(mean(getEmotions(i, twelve), na.rm=TRUE), mean(getEmotions(i, fourteen), na.rm=TRUE), mean(getEmotions(i, sixteen), na.rm=TRUE), mean(getEmotions(i, eighteen), na.rm=TRUE))
+  if (i == "Anger"){
+    
+    plot(c(12,14,16,18), emotion_lines, type="b", xlim=c(12,18), ylim=c(0,0.10), col=me_color, xlab = "Age", ylab="Emotion")
+
+  }
+  else
+  {
+    
+  lines(c(12,14,16,18), emotion_lines, type="b", col=me_color)
+    cat(emotion_lines)
+    cat('\n')
+  }
+}
+# labels(xlab="Age", ylab = "Emotion")
+legend(19, .10, legend=emotions, col=used_colors, lty=1, cex=0.8, xpd=TRUE)
+# used_colors
+```
